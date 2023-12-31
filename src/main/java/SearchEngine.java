@@ -11,6 +11,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SearchEngine {
+    public static final boolean UPDATE_INDICES_FLAG = false;
+    private MDictionary fileNamesDictionary;
+    private Pair<Integer, String>[] fileIdsAndNamesArray;
 
     public String[] readFiles(String directory, MorfologyTool mt) {
 
@@ -179,22 +182,40 @@ public class SearchEngine {
                 }
             }
 
-        for(File file : folder.listFiles()) {
-            if(!file.getName().equals("reverseIndices")) {
-                try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-                    while (br.ready()) {
-                        lineValues = br.readLine().split(" ");
-                        File indexFile = new File("indices/reverseIndices/" + lineValues[0] + ".idx");
-                        indexFile.createNewFile();
-                        PrintWriter pw = new PrintWriter(new FileOutputStream(indexFile, true));
-                        pw.println((String.copyValueOf(file.getName().toCharArray(), 0, file.getName().length() - 4) + ".txt") + " " + lineValues[1]);
-                        pw.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
+        for(Pair<Integer, String> fileIdAndName : getFileIdAndNames()) {
+            try (BufferedReader br = new BufferedReader(new FileReader("indices/" + fileIdAndName.getValue1() + ".idx"))) {
+                while (br.ready()) {
+                    lineValues = br.readLine().split(" ");
+                    File indexFile = new File("indices/reverseIndices/" + lineValues[0] + ".idx");
+                    indexFile.createNewFile();
+                    PrintWriter pw = new PrintWriter(new FileOutputStream(indexFile, true));
+                    pw.println(fileIdAndName.getValue0() + " " + lineValues[1]);
+                    pw.close();
                 }
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
+    }
+
+    private Pair<Integer, String>[] getFileIdAndNames(){
+        //ID plików w plikach indeksowych powinny być w kolejności ID, a nie nazw w postaci ciągów znaków
+        //przypiszmy każdemu plikowi numer ID
+        File[] files = new File("files").listFiles();
+        MDictionary dictionary = new MDictionary();
+        Pair<Integer, String>[] fileIdsAndNames = new Pair[files.length];
+        int i = 0;
+
+        String fileName;
+        for(File file : files) {
+            fileName = file.getName().split(".txt")[0];
+            fileIdsAndNames[i++] = new Pair<>(dictionary.Add(fileName), fileName); //sama nazwa pliku, bez rozszerzenia
+        }
+        Arrays.sort(fileIdsAndNames, (pair1, pair2) -> pair1.getValue0() - pair2.getValue0());
+
+        fileNamesDictionary = dictionary;
+        fileIdsAndNamesArray = fileIdsAndNames;
+        return fileIdsAndNames;
     }
 
 
@@ -208,17 +229,35 @@ public class SearchEngine {
         String[] res = new String[new File("files").listFiles().length];
         int index = 0;
 
+        Pair<Integer, String>[] fileIdsAndNames = getFileIdAndNames();
 
+        //Czytamy odwrócony indeks dla słowa kluczowego - wszystkie pliki zawarte w nim zawierają słowo.
         try (BufferedReader br = new BufferedReader(new FileReader("indices/reverseIndices/" + word + ".idx"))) {
             while (br.ready()) {
-                res[index++] = br.readLine().split("\\.txt")[0] + ".txt";
+                res[index++] = getFileName(Integer.parseInt(br.readLine().split(" ")[0])) + ".txt";
             }
         } catch (IOException e){
             e.printStackTrace();
         }
-
-
         return Arrays.copyOfRange(res, 0, index);
+    }
+
+    private String getFileName(int id) {
+        int f = 0, l = fileIdsAndNamesArray.length - 1;
+
+        while (f <= l) {
+            int m = f + (l - f) / 2; // Recalculate middle index within the loop
+
+            if (fileIdsAndNamesArray[m].getValue0() == id) {
+                return fileIdsAndNamesArray[m].getValue1();
+            } else if (fileIdsAndNamesArray[m].getValue0() < id) {
+                f = m + 1; // Adjust lower bound
+            } else {
+                l = m - 1; // Adjust upper bound
+            }
+        }
+
+        return "File not found"; // Return a default value if ID is not found
     }
 
 
@@ -233,7 +272,7 @@ public class SearchEngine {
         for(String word : words) { // O(docs * words)?
             try (BufferedReader br = new BufferedReader(new FileReader("indices/reverseIndices/" + word + ".idx"))) {
                 while (br.ready()) {
-                     dictionary.Add(br.readLine().split("\\.txt")[0] + ".txt");
+                     dictionary.Add(getFileName(Integer.parseInt(br.readLine().split(" ")[0])));
                 }
             } catch (IOException e) {
                 e.printStackTrace();
@@ -247,6 +286,16 @@ public class SearchEngine {
             if (pair.getValue1() == words.length)
                 res[index++] = pair.getValue0();
         return Arrays.copyOfRange(res, 0, index);
+    }
+
+    public String[] getDocsContaingWordsNew(String[] words){
+        File reverseIndicesFolder = new File("indices/reverseIndices");
+        int reverseIndicesAmount = reverseIndicesFolder.listFiles().length;
+
+        Pair<String, Integer>[][] pairsForWord = new Pair[reverseIndicesAmount][];
+
+
+        return null;
     }
 
 
@@ -265,8 +314,8 @@ public class SearchEngine {
             if(reverseIndexFile.exists()) {
                 try (BufferedReader br = new BufferedReader(new FileReader(reverseIndexFile))) {
                     while (br.ready()) {
-                        fileValues = br.readLine().split("\\.txt ");
-                        dictionary.Add(fileValues[0] + ".txt");
+                        fileValues = br.readLine().split(" ");
+                        dictionary.Add(getFileName(Integer.parseInt(fileValues[0])));
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -288,14 +337,13 @@ public class SearchEngine {
      */
     public Pair<String,Double>[] getDocsClosestToProfile(int n, String profileName) {
         File fileFolder = new File("files/");
-        int fileCount = fileFolder.listFiles().length;
-        File[] files = fileFolder.listFiles();
+        int fileCount = fileIdsAndNamesArray.length;
 
         File profileFile = new File("profiles/" + profileName + ".txt");
         String[] profileKeyWords = readProfile(profileFile.getName());
 
         File reverseIndicesFolder = new File("indices/reverseIndices");
-        Pair<String, Integer>[][] reverseIndices = new Pair[profileKeyWords.length][]; //odwrócone indeksy w postaci podtablic par reprezentujących każdy z plików
+        Pair<Integer, Integer>[][] reverseIndices = new Pair[profileKeyWords.length][]; //odwrócone indeksy w postaci podtablic par reprezentujących każdy z plików
 
 
 
@@ -321,13 +369,13 @@ public class SearchEngine {
         double logResult;
 
         for(int i = 0; i < fileCount; i++) { //1
-            for(String keyWord : profileKeyWords) {
-                for(Pair<String, Integer>[] reverseIndex : reverseIndices) {
-                    for(Pair<String, Integer> pair : reverseIndex) {
-                        if (pair.getValue0().equals(files[i].getName())) {
+            for(String keyWord : profileKeyWords) { //2
+                for(Pair<Integer, Integer>[] reverseIndex : reverseIndices) { //3
+                    for(Pair<Integer, Integer> pair : reverseIndex) {
+                        if (Objects.equals(pair.getValue0(), fileIdsAndNamesArray[i].getValue0())) {
                             logResult = Math.log10(pair.getValue1());
                             if (pairs[i] == null) {
-                                pairs[i] = new Pair<>(pair.getValue0(), logResult);
+                                pairs[i] = new Pair<>(getFileName(pair.getValue0()), logResult);
                             } else {
                                 pairs[i] = pairs[i].setAt1(pairs[i].getValue1() + logResult);
                             }
@@ -337,6 +385,7 @@ public class SearchEngine {
                 }
             }
         }
+
         int nulls = 0;
         for (int j = 0; j < pairs.length; j++)
             if(pairs[j] == null)
@@ -358,17 +407,19 @@ public class SearchEngine {
         return Arrays.copyOfRange(newPairs, 0, n);
     }
 
-    private Pair<String, Integer>[] readIndex(File file, int count) {
-        Pair<String, Integer>[] res = new Pair[30];
+    private Pair<Integer, Integer>[] readIndex(File file, int count) {
+        Pair<Integer, Integer>[] res = new Pair[30];
         String[] fileValues;
         int resIndex = 0;
         try (BufferedReader reverseIndexBr = new BufferedReader(new FileReader(file))) {
             while (reverseIndexBr.ready()) {
-                fileValues = reverseIndexBr.readLine().split(".txt ");
-                if(resIndex >= res.length)
+                fileValues = reverseIndexBr.readLine().split(" ");
+                if (resIndex >= res.length)
                     res = Arrays.copyOf(res, (int) (res.length * 1.25));
-                res[resIndex++] = new Pair<>(fileValues[0] + ".txt", Integer.parseInt(fileValues[1]));
+                res[resIndex++] = new Pair<>(Integer.parseInt(fileValues[0]), Integer.parseInt(fileValues[1]));
             }
+        } catch (FileNotFoundException e){
+            ;
         } catch (IOException e){
             e.printStackTrace();
         }

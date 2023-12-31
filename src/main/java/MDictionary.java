@@ -179,6 +179,11 @@ public class MDictionary {
         return res;
     }
 
+    //moje, nie wiem czy można
+    public String getWord(int h){
+        return null;
+    }
+
     @Override
     public String toString() {
         String res = "";
