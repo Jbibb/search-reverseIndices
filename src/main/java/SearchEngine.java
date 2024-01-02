@@ -5,13 +5,10 @@
 import org.javatuples.Pair;
 
 import java.io.*;
-import java.text.Collator;
 import java.util.*;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class SearchEngine {
-    public static final boolean UPDATE_INDICES_FLAG = true;
+    public static final boolean UPDATE_INDICES_FLAG = false;
     private MDictionary fileNamesDictionary;
     private Pair<Integer, String>[] fileIdsAndNamesArray;
 
@@ -60,11 +57,7 @@ public class SearchEngine {
             String text = "";
             while ((line = br.readLine()) != null)
                 text += line + " ";
-            System.out.println("PRZED:");
-            System.out.println(text);
             text = text.replaceAll("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+", "");
-            System.out.println("PO:");
-            System.out.println(text);
             split = text.split("[^a-zA-Z0-9ąćęłńóśżźĄĆŁŃÓĘŚŻŹ]+");
             for (String s : split)
                 if (toString().trim().length() > 1) {
@@ -75,12 +68,6 @@ public class SearchEngine {
         } catch (IOException e){
             e.printStackTrace();
         }
-
-        res = Arrays.copyOfRange(res, 0, resIndex);
-        System.out.println("====================================");
-        for (String s : res)
-            System.out.println(s);
-        System.out.println("====================================");
         return Arrays.copyOfRange(res, 0, resIndex);
     }
 
@@ -165,9 +152,9 @@ public class SearchEngine {
 
 
     /**
-     * Tworzy pliki indeksowe dla słów kluczowych: w każdym wierszu jest nazwa pliku oraz liczba wystąpień słowa w pliku
+     * Tworzy pliki indeksowe dla słów kluczowych: w każdym wierszu jest id pliku oraz liczba wystąpień słowa w pliku
      */
-    public void makeReversedIndexes(){
+    public void makeReverseIndices() {
         File folder = new File("indices/");
         String[] lineValues;
 
@@ -204,7 +191,7 @@ public class SearchEngine {
     }
 
     private Pair<Integer, String>[] getFileIdAndNames(){
-        //ID plików w plikach indeksowych powinny być w kolejności ID, a nie nazw w postaci ciągów znaków
+        //ID plików w plikach indeksowych powinny być posortowane rosnąco ID
         //przypiszmy każdemu plikowi numer ID
         File[] files = new File("files").listFiles();
         MDictionary dictionary = new MDictionary();
@@ -231,40 +218,38 @@ public class SearchEngine {
      * @return
      */
     public String[] getDocsContainingWord(String word) {
-        makeReversedIndexes();
-
-        String[] res = new String[new File("files").listFiles().length];
-        int index = 0;
-
-        Pair<Integer, String>[] fileIdsAndNames = getFileIdAndNames();
+        String[] res = new String[30];
+        int resIndex = 0;
 
         //Czytamy odwrócony indeks dla słowa kluczowego - wszystkie pliki zawarte w nim zawierają słowo.
         try (BufferedReader br = new BufferedReader(new FileReader("indices/reverseIndices/" + word + ".idx"))) {
             while (br.ready()) {
-                res[index++] = getFileName(Integer.parseInt(br.readLine().split(" ")[0])) + ".txt";
+                if(resIndex >= res.length)
+                    res = Arrays.copyOf(res, (int) (res.length * 1.25));
+                res[resIndex++] = getFileName(Integer.parseInt(br.readLine().split(" ")[0])) + ".txt";
             }
         } catch (IOException e){
             e.printStackTrace();
         }
-        return Arrays.copyOfRange(res, 0, index);
+        return Arrays.copyOfRange(res, 0, resIndex);
     }
 
     private String getFileName(int id) {
         int f = 0, l = fileIdsAndNamesArray.length - 1;
 
         while (f <= l) {
-            int m = f + (l - f) / 2; // Recalculate middle index within the loop
+            int m = f + (l - f) / 2;
 
             if (fileIdsAndNamesArray[m].getValue0() == id) {
                 return fileIdsAndNamesArray[m].getValue1();
             } else if (fileIdsAndNamesArray[m].getValue0() < id) {
-                f = m + 1; // Adjust lower bound
+                f = m + 1;
             } else {
-                l = m - 1; // Adjust upper bound
+                l = m - 1;
             }
         }
 
-        return "File not found"; // Return a default value if ID is not found
+        return null;
     }
 
 
@@ -273,7 +258,7 @@ public class SearchEngine {
      * @param words wyszukiwane słowa
      * @return
      */
-    public String[] getDocsContainingWords(String[] words) {
+    public String[] getDocsContainingWordsOld(String[] words) {
         MDictionary dictionary = new MDictionary();
 
         for(String word : words) { // O(docs * words)?
@@ -295,14 +280,90 @@ public class SearchEngine {
         return Arrays.copyOfRange(res, 0, index);
     }
 
-    public String[] getDocsContaingWordsNew(String[] words){
-        File reverseIndicesFolder = new File("indices/reverseIndices");
-        int reverseIndicesAmount = reverseIndicesFolder.listFiles().length;
+    public String[] getDocsContainingWords(String[] words){
+        Pair<Integer, Integer>[][] reverseIndices = new Pair[words.length][]; //odwrócone indeksy w postaci podtablic par reprezentujących każdy z plików [pary (plik, liczebność słowa)]
+        /* Wierszy jest tyle co słów kluczowych (profile.length). We wszystkich wierszach (dla wszystkich słów kluczowych) liczba par powinna (chyba) być zbliżona do liczby plików tekstowych.
+        Pary są posortowane rosnąco id plików. (pierwsza wartość w parze)
+        [
+        [(235, 3), (543, 1), (3424, 7)],
+        [(174, 1), (235, 2), (2326, 12), (2562, 6)],
+        [(235, 3), (543, 1), (3424, 7)]
+        ]
+         */
 
-        Pair<String, Integer>[][] pairsForWord = new Pair[reverseIndicesAmount][];
+        int l = 0;
+        for(String keyWord : words) {
+            reverseIndices[l] = readIndex(new File("indices/reverseIndices/" + words[l] + ".idx"), 0);
 
+            /*System.out.print("(" + keyWord + "): [");
+            for(Pair<Integer, Integer> pair : reverseIndices[l])
+                System.out.print(pair + " ");
+            System.out.println("]");*/
 
-        return null;
+            l++;
+        }
+
+        int[] keyWordPointers = new int[words.length]; //każde słowo kluczowe ma własny niezależny wskaźnik idący po też własnym indeksie
+
+        String[] res = new String[30];
+        int resIndex = 0;
+
+        int minFileId, minFilePointerIndex = -1;
+        boolean fileMatchesAllKeywords, exit = false;
+
+        //warunkiem wyjścia z pętli ma być dotarcie wskaźnika po najmniejszym odwróconym indeksie do końca <- to nie jest prawda i nie wiem czy wgl zostaje
+        //koniec pętli jest wtedy gdy jakikolwiek wskaźnik dotrze do końca swojej tablicy (indeksu)
+
+        int minReverseIndexLength = Rozmiar.MAX_WORD;
+        int minReverseIndexPointerIndex = -1;
+
+        for(int i = 0; i < reverseIndices.length; i++)
+            if(reverseIndices[i].length < minReverseIndexLength) {        //szukanie najkrótszego indeksu. nwm czy to potrzebne
+                minReverseIndexLength = reverseIndices[i].length;
+                minReverseIndexPointerIndex = i;
+            }
+
+        if(minReverseIndexLength == 0)
+            exit = true;
+
+        while (!exit) {
+            minFileId = Rozmiar.MAX_ELEM;
+            for(int j = 0; j < keyWordPointers.length; j++)                            //Szukanie najmniejszego id pliku spośród par wskazywanych przez indeksy
+                if(reverseIndices[j][keyWordPointers[j]].getValue0() < minFileId) {
+                    minFileId = reverseIndices[j][keyWordPointers[j]].getValue0();
+                    minFilePointerIndex = j;
+                }
+
+            fileMatchesAllKeywords = true;
+            for(int j  = 0; j < reverseIndices.length && fileMatchesAllKeywords; j++) { //Sprawdzenie czy wszystkie wskaźniki wskazują na takie samo id pliku
+                if(reverseIndices[j][keyWordPointers[j]].getValue0() != minFileId) {
+                    fileMatchesAllKeywords = false;
+                }
+            }
+
+            if (!fileMatchesAllKeywords) {                       //Inkrementacja najmniejszego wskaźnika}
+                if (++keyWordPointers[minFilePointerIndex] >= reverseIndices[minFilePointerIndex].length - 1)
+                    exit = true;
+            } else {                                             //...albo dodanie nazwy pliku do rezultatu
+                if (resIndex >= res.length)
+                    res = Arrays.copyOf(res, (int) (res.length * 1.25));
+                res[resIndex++] = getFileName(minFileId);
+
+                for(int j = 0; j < keyWordPointers.length; j++) { // oraz inkrementacja wszystkich wskaźników
+                    if(keyWordPointers[j]++ >= reverseIndices[j].length - 1) // sprawdzenie czy odwrócony indeks nie został wyczerpany
+                        exit = true;
+                }
+            }
+        }
+        /*
+        [
+        [(235, 3), (543, 1), (3424, 7)],
+        [(174, 1), (235, 2), (2326, 12), (2562, 6)],
+        [(102, 3), (222, 1), (235, 7)]
+        ]
+         */
+
+        return Arrays.copyOfRange(res, 0, resIndex);
     }
 
 
@@ -343,21 +404,29 @@ public class SearchEngine {
      * @return
      */
     public Pair<String,Double>[] getDocsClosestToProfile(int n, String profileName) {
-        File fileFolder = new File("files/");
         int fileCount = fileIdsAndNamesArray.length;
 
         File profileFile = new File("profiles/" + profileName + ".txt");
         String[] profileKeyWords = readProfile(profileFile.getName());
 
-        File reverseIndicesFolder = new File("indices/reverseIndices");
-        Pair<Integer, Integer>[][] reverseIndices = new Pair[profileKeyWords.length][]; //odwrócone indeksy w postaci podtablic par reprezentujących każdy z plików
-
-
-
+        Pair<Integer, Integer>[][] reverseIndices = new Pair[profileKeyWords.length][]; //odwrócone indeksy w postaci podtablic par reprezentujących każdy z plików [pary (plik, liczebność słowa)]
+        /* Wierszy jest tyle co słów kluczowych (profile.length). We wszystkich wierszach (dla wszystkich słów kluczowych) liczba par powinna być zbliżona do liczby plików tekstowych.
+        [
+        [(235, 3), (543, 1), (3424, 7)],
+        [(174, 1), (629, 2), (2326, 12), (2562, 6)],
+        [(235, 3), (543, 1), (3424, 7)]
+        ]
+         */
         //czej:
         int l = 0;
         for(String keyWord : profileKeyWords) {
             reverseIndices[l] = readIndex(new File("indices/reverseIndices/" + profileKeyWords[l] + ".idx"), 0);
+
+            /*System.out.print("(" + keyWord + "): [");
+            for(Pair<Integer, Integer> pair : reverseIndices[l])
+                System.out.print(pair + " ");
+            System.out.println("]");*/
+
             l++;
         }
         //TU SKOŃCZYŁEŚ. \/\/\/ DOPASOWYWUJESZ Z LISTY WSZYSTKICH PLIKÓW INDEKSÓW ODWRÓCONYCH TYLKO TE KTÓRE ODPOWIADAJĄ SŁOWOM KLUCZOWYM Z PROFILU DLA KTÓREGO SZUKASZ PLIKÓW \/\/\/\/\/
@@ -419,9 +488,9 @@ public class SearchEngine {
         String[] fileValues;
         int resIndex = 0;
         if(file.exists())
-            try (BufferedReader reverseIndexBr = new BufferedReader(new FileReader(file))) {
-                while (reverseIndexBr.ready()) {
-                    fileValues = reverseIndexBr.readLine().split(" ");
+            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
+                while (br.ready()) {
+                    fileValues = br.readLine().split(" ");
                     if (resIndex >= res.length)
                         res = Arrays.copyOf(res, (int) (res.length * 1.25));
                     res[resIndex++] = new Pair<>(Integer.parseInt(fileValues[0]), Integer.parseInt(fileValues[1]));

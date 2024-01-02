@@ -55,7 +55,10 @@ public class SearchApplication {
                 Pair<String, Integer>[] wordsL = mDict.getAppearedWordsWithCount();
                 se.makeIndex(fileEntry, wordsL);
             }
+
         }
+        se.makeReverseIndices();
+
         // wyświetl pliki zawierające dane słowo
         String word = "rakieta";
         System.out.println("--------- Files containing " + word + " --------");
@@ -67,11 +70,12 @@ public class SearchApplication {
         for(String file : res)
             System.out.println(file);
         // wyświetl pliki zawierające wszystkie słowa
-        words = new String[] {"armia", "artyleria", "front", "wojsko"};
+        words = new String[] {"rakieta"};
         System.out.print("--------- Files containing ");
         for(String w : words)
             System.out.print(w + " ");
         System.out.println(" --------");
+
         long start = System.nanoTime();
         String[] strings = se.getDocsContainingWords(words);
         long end = System.nanoTime();
