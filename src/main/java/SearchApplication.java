@@ -4,24 +4,19 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 /**
  * !!! Podlegać modyfikacji mogę jedynie elementy oznaczone to do. !!!
  */
 
 public class SearchApplication {
     public static void main1(String[] args){
-        int sinsCount = 0;
-        for(File file : new File("profiles").listFiles()) {
-            try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-                while (br.ready()) {
-                    System.out.println(br.readLine().replaceAll("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+", ""));
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+        try (BufferedReader br = new BufferedReader(new FileReader("files/Android będzie płatny, więc smartfony zdrożeją.txt"))) {
+            while (br.ready()) {
+                System.out.println(br.readLine());
+                        //.replaceAll("[^\\x20A-Za-zĄąĆćĘęŁłÓóŚśŻżŹź\\xA5\\xB9\\xC6\\xE6\\xCA\\xEA\\xA3\\xB3\\xD3\\xF3\\x8C\\x9C\\x8F\\x9F\\xA1\\xB1]+", ""));
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
     public static void main(String[] args) {
@@ -37,17 +32,20 @@ public class SearchApplication {
         if(SearchEngine.UPDATE_INDICES_FLAG) {
             for (String word : keyWords) {
                 mDict.Add(word);
-                if (word.equals("adobe"))
-                    System.out.println("adobe!!!");
             }
+            /*
             System.out.println("-------- In dictionary -------");
             for (String word : mDict.getWords()) {
                 System.out.println(word);
             }
+             */
 
+            /*
             String[] ss = se.readFiles("files", mt);
             for (String s : ss)
                 System.out.println(s);
+            */
+
             File folder = new File("files");
             for (final File fileEntry : folder.listFiles()) {
                 words = se.readFile(fileEntry);
@@ -82,14 +80,14 @@ public class SearchApplication {
         for(String file : strings)
             System.out.println(file);
         // wyświetl pliki zawierające najwięcej z podanych słów
-        words = new String[] {"armia", "artyleria", "front", "generał", "wojsko", "broń", "bitwa", "atakowa"};
+        words = new String[] {"armia", "artyleria", "front", "generał", "wojsko", "broń", "bitwa", "atakować"};
         System.out.print("--------- Files containing max of: ");
         for(String w : words)
             System.out.print(w + " ");
         System.out.println(" --------");
         for(String file : se.getDocsWithMaxMatchingWords(words, 6))
             System.out.println(file);
-        String profileName = "it";
+        String profileName = "militaria";
         System.out.println("-------- Files closest to the profile: '"+ profileName + "' --------");
         start = System.nanoTime();
         Pair<String, Double> [] files = se.getDocsClosestToProfile(25, profileName);

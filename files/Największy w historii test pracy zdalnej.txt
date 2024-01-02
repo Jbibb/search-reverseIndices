@@ -1,41 +1,41 @@
-Nie wszystkie biurowce znajd¹ najemców. Koronawirus zmieni rynek. "Najwiêkszy w historii test pracy zdalnej"
+Nie wszystkie biurowce znajdÄ… najemcÃ³w. Koronawirus zmieni rynek. "NajwiÄ™kszy w historii test pracy zdalnej"
 
 19.04.2020
 
-Eksperci rynku nieruchomoœci ju¿ wiedz¹, ¿e nie bêdzie ³atwego powrotu do przesz³oœci. Masowa zdalna praca sta³a siê faktem i z pewnoœci¹ znajd¹ siê tacy, którzy bêd¹ j¹ chcieli kontynuowaæ nawet, gdy pandemia wygaœnie.
+Eksperci rynku nieruchomoÅ›ci juÅ¼ wiedzÄ…, Å¼e nie bÄ™dzie Å‚atwego powrotu do przeszÅ‚oÅ›ci. Masowa zdalna praca staÅ‚a siÄ™ faktem i z pewnoÅ›ciÄ… znajdÄ… siÄ™ tacy, ktÃ³rzy bÄ™dÄ… jÄ… chcieli kontynuowaÄ‡ nawet, gdy pandemia wygaÅ›nie.
 
-Do niedawna praca zdalna stanowi³a margines w korporacjach. Oczywiœcie wielu mog³o czasem popracowaæ z domu, ale nie by³a to norma i zdecydowanie preferowano pracê przy biurkach w wielkim klimatyzowanym biurowcu.
+Do niedawna praca zdalna stanowiÅ‚a margines w korporacjach. OczywiÅ›cie wielu mogÅ‚o czasem popracowaÄ‡ z domu, ale nie byÅ‚a to norma i zdecydowanie preferowano pracÄ™ przy biurkach w wielkim klimatyzowanym biurowcu.
 
-Wynika³o to g³ównie z obaw mened¿erów. Po pierwsze, nie do koñca wierzyli w to, ¿e rozwi¹zania technologiczne spe³ni¹ wszystkie oczekiwania - na przyk³ad dotycz¹ce pracy konsultanta call center, który musi nie tylko odebraæ po³¹czenie z miasta, lecz tak¿e równoczeœnie mieæ szybki dostêp do du¿ej firmowej bazy danych. Po drugie, wielu z nich uwa¿a³o, ¿e praca zdalna mo¿e obni¿yæ wydajnoœæ pracowników - myœleli, ¿e dom to miejsce, gdzie o skupienie zdecydowanie trudniej ni¿ w biurze.
+WynikaÅ‚o to gÅ‚Ã³wnie z obaw menedÅ¼erÃ³w. Po pierwsze, nie do koÅ„ca wierzyli w to, Å¼e rozwiÄ…zania technologiczne speÅ‚niÄ… wszystkie oczekiwania - na przykÅ‚ad dotyczÄ…ce pracy konsultanta call center, ktÃ³ry musi nie tylko odebraÄ‡ poÅ‚Ä…czenie z miasta, lecz takÅ¼e rÃ³wnoczeÅ›nie mieÄ‡ szybki dostÄ™p do duÅ¼ej firmowej bazy danych. Po drugie, wielu z nich uwaÅ¼aÅ‚o, Å¼e praca zdalna moÅ¼e obniÅ¼yÄ‡ wydajnoÅ›Ä‡ pracownikÃ³w - myÅ›leli, Å¼e dom to miejsce, gdzie o skupienie zdecydowanie trudniej niÅ¼ w biurze.
 
-Powy¿sze obawy w czasie ogromnego testu pracy zdalnej - pandemii - okaza³y siê w znakomitej wiêkszoœci fa³szywym lêkiem.
+PowyÅ¼sze obawy w czasie ogromnego testu pracy zdalnej - pandemii - okazaÅ‚y siÄ™ w znakomitej wiÄ™kszoÅ›ci faÅ‚szywym lÄ™kiem.
 
-800 serwisantów pracuje z domu
+800 serwisantÃ³w pracuje z domu
 
-Jednym z najlepszych przyk³adów udanego home office by³o to, co w po³owie marca zrobi³ Diebold Nixdorf Polska. Dostawca rozwi¹zañ sprzêtowych i oprogramowania dla sektora bankowego oraz handlowego wys³a³ zespó³ service desku (centrum obs³ugi) do domu.
+Jednym z najlepszych przykÅ‚adÃ³w udanego home office byÅ‚o to, co w poÅ‚owie marca zrobiÅ‚ Diebold Nixdorf Polska. Dostawca rozwiÄ…zaÅ„ sprzÄ™towych i oprogramowania dla sektora bankowego oraz handlowego wysÅ‚aÅ‚ zespÃ³Å‚ service desku (centrum obsÅ‚ugi) do domu.
 
-Ponad 800 konsultantów zza swojego prywatnego biurka, a nie jak wczeœniej z biur w Warszawie i w Szczecinie, zaczê³o odpowiadaæ na pytania miêdzynarodowych klientów. 
+Ponad 800 konsultantÃ³w zza swojego prywatnego biurka, a nie jak wczeÅ›niej z biur w Warszawie i w Szczecinie, zaczÄ™Å‚o odpowiadaÄ‡ na pytania miÄ™dzynarodowych klientÃ³w. 
 
-Przejœcie na tryb zdalny zajê³o Diebold Nixdorf kilka dni. W tym czasie firma wyposa¿y³a pracowników w kilkaset dodatkowych narzêdzi i systemów, m.in. laptopy, urz¹dzenia peryferyjne, licencje na niezbêdne oprogramowanie czy technologiê VoIP do rozmów g³osowych. 
+PrzejÅ›cie na tryb zdalny zajÄ™Å‚o Diebold Nixdorf kilka dni. W tym czasie firma wyposaÅ¼yÅ‚a pracownikÃ³w w kilkaset dodatkowych narzÄ™dzi i systemÃ³w, m.in. laptopy, urzÄ…dzenia peryferyjne, licencje na niezbÄ™dne oprogramowanie czy technologiÄ™ VoIP do rozmÃ³w gÅ‚osowych. 
 
-- System oparty na chmurze, z którego korzystamy, pozwala sprawnie zarz¹dzaæ zespo³em i zapewnia klientom nieprzerwane wsparcie. Jedynym elementem koniecznym jest dostêp do internetu. Jeœli pracownik jest podpiêty do sieci, mo¿e wykonywaæ swoje obowi¹zki z tak¹ sam¹ efektywnoœci¹ jak w biurze i nic, od strony technologicznej, nie jest w stanie zaburzyæ tego procesu - twierdzi Emilian Mleczak, szef service desku Diebold Nixdorf Polska. 
+- System oparty na chmurze, z ktÃ³rego korzystamy, pozwala sprawnie zarzÄ…dzaÄ‡ zespoÅ‚em i zapewnia klientom nieprzerwane wsparcie. Jedynym elementem koniecznym jest dostÄ™p do internetu. JeÅ›li pracownik jest podpiÄ™ty do sieci, moÅ¼e wykonywaÄ‡ swoje obowiÄ…zki z takÄ… samÄ… efektywnoÅ›ciÄ… jak w biurze i nic, od strony technologicznej, nie jest w stanie zaburzyÄ‡ tego procesu - twierdzi Emilian Mleczak, szef service desku Diebold Nixdorf Polska. 
 
-Pracê zdaln¹ wysoko oceni³ te¿ ostatnio miêdzy innymi Adam Góral, twórca i prezes Asseco Poland. Kilka dni temu powiedzia³, ¿e 95 proc. pracowników najwiêkszego polskiego producenta oprogramowania pracuje zdalnie i ich wydajnoœæ ani trochê nie spad³a.
+PracÄ™ zdalnÄ… wysoko oceniÅ‚ teÅ¼ ostatnio miÄ™dzy innymi Adam GÃ³ral, twÃ³rca i prezes Asseco Poland. Kilka dni temu powiedziaÅ‚, Å¼e 95 proc. pracownikÃ³w najwiÄ™kszego polskiego producenta oprogramowania pracuje zdalnie i ich wydajnoÅ›Ä‡ ani trochÄ™ nie spadÅ‚a.
 
-To wszystko to du¿o wiêcej ni¿ pionierskie przecieranie nieznanych szlaków.
+To wszystko to duÅ¼o wiÄ™cej niÅ¼ pionierskie przecieranie nieznanych szlakÃ³w.
 
-Eksperci ju¿ widz¹ nowy trend
+Eksperci juÅ¼ widzÄ… nowy trend
 
-Eksperci rynku nieruchomoœci ju¿ wiedz¹, ¿e na rynku biurowym nie bêdzie tak piêknie jak do tej pory - w Warszawie i w innych najwiêkszych polskich miastach od kilku lat w zasadzie mieliœmy nieustaj¹cy boom.
+Eksperci rynku nieruchomoÅ›ci juÅ¼ wiedzÄ…, Å¼e na rynku biurowym nie bÄ™dzie tak piÄ™knie jak do tej pory - w Warszawie i w innych najwiÄ™kszych polskich miastach od kilku lat w zasadzie mieliÅ›my nieustajÄ…cy boom.
 
-- Mo¿na przypuszczaæ, ¿e sytuacja przyczyni siê do zmiany trendów na rynku - w kolejnych latach bêdziemy mogli zaobserwowaæ wiêkszy udzia³ renegocjacji umów. Moim zdaniem równie¿ mobilizacja firm do pracy zdalnej mo¿e mieæ prze³o¿enie na liczbê wynajmowanych metrów - twierdzi Pawe³ Ska³ba, senior partner, dyrektor Dzia³u Powierzchni Biurowych w Colliers International, jednej z najwiêkszych firm doradczych na rynku nieruchomoœci.
+- MoÅ¼na przypuszczaÄ‡, Å¼e sytuacja przyczyni siÄ™ do zmiany trendÃ³w na rynku - w kolejnych latach bÄ™dziemy mogli zaobserwowaÄ‡ wiÄ™kszy udziaÅ‚ renegocjacji umÃ³w. Moim zdaniem rÃ³wnieÅ¼ mobilizacja firm do pracy zdalnej moÅ¼e mieÄ‡ przeÅ‚oÅ¼enie na liczbÄ™ wynajmowanych metrÃ³w - twierdzi PaweÅ‚ SkaÅ‚ba, senior partner, dyrektor DziaÅ‚u Powierzchni Biurowych w Colliers International, jednej z najwiÄ™kszych firm doradczych na rynku nieruchomoÅ›ci.
 
-Ciekawe spostrze¿enia znalaz³y siê te¿ w raporcie o wp³ywie epidemii koronawirusa na rynek nieruchomoœci w Europie holenderskiej firmy MVGM zajmuj¹cej siê zarz¹dzaniem nieruchomoœciami. Czêœæ tego raportu zawiera opinie ekspertów JLL, du¿ej miêdzynarodowej firmy doradczej dzia³aj¹cej na rynku nieruchomoœci.
+Ciekawe spostrzeÅ¼enia znalazÅ‚y siÄ™ teÅ¼ w raporcie o wpÅ‚ywie epidemii koronawirusa na rynek nieruchomoÅ›ci w Europie holenderskiej firmy MVGM zajmujÄ…cej siÄ™ zarzÄ…dzaniem nieruchomoÅ›ciami. CzÄ™Å›Ä‡ tego raportu zawiera opinie ekspertÃ³w JLL, duÅ¼ej miÄ™dzynarodowej firmy doradczej dziaÅ‚ajÄ…cej na rynku nieruchomoÅ›ci.
 
-- Jesteœmy w œrodku najwiêkszego w historii testowania pracy zdalnej - czytamy w raporcie. Korporacje masowo testuj¹ przydatne w niej narzêdzia i procedury. Autorzy opracowania uwa¿aj¹, ¿e popyt na rozwi¹zania do pracy zdalnej bêdzie rós³. Nie wygaœnie z koñcem epidemii. I to wp³ynie na rynek nieruchomoœci biurowych.
+- JesteÅ›my w Å›rodku najwiÄ™kszego w historii testowania pracy zdalnej - czytamy w raporcie. Korporacje masowo testujÄ… przydatne w niej narzÄ™dzia i procedury. Autorzy opracowania uwaÅ¼ajÄ…, Å¼e popyt na rozwiÄ…zania do pracy zdalnej bÄ™dzie rÃ³sÅ‚. Nie wygaÅ›nie z koÅ„cem epidemii. I to wpÅ‚ynie na rynek nieruchomoÅ›ci biurowych.
 
-Jak? Inwestorzy bêd¹ mniej zarabiaæ na biurowcach, co JLL opisa³o s³owami, ¿e wskaŸniki wykorzystania biura zmniejsz¹ siê, je¿eli praca zdalna bêdzie czêœciej wykorzystywana. Najwiêcej mog¹ straciæ biura specjalizuj¹ce siê w wynajmie powierzchni na krótkie terminy.
+Jak? Inwestorzy bÄ™dÄ… mniej zarabiaÄ‡ na biurowcach, co JLL opisaÅ‚o sÅ‚owami, Å¼e wskaÅºniki wykorzystania biura zmniejszÄ… siÄ™, jeÅ¼eli praca zdalna bÄ™dzie czÄ™Å›ciej wykorzystywana. NajwiÄ™cej mogÄ… straciÄ‡ biura specjalizujÄ…ce siÄ™ w wynajmie powierzchni na krÃ³tkie terminy.
 
-A skoro tak, czego ju¿ w raporcie nie przeczytamy, nowych biur mo¿e powstawaæ mniej, a spora czêœæ znajduj¹cych siê w budowie lub jeszcze do koñca niewynajêtych mo¿e mieæ problemy ze znalezieniem najemców. Jest wiêc i prawdopodobne, ¿e w polskim krajobrazie pojawi¹ siê wyludnione lub niedokoñczone biurowce. Rzecz jeszcze ca³kiem niedawno absolutnie niewyobra¿alna.
+A skoro tak, czego juÅ¼ w raporcie nie przeczytamy, nowych biur moÅ¼e powstawaÄ‡ mniej, a spora czÄ™Å›Ä‡ znajdujÄ…cych siÄ™ w budowie lub jeszcze do koÅ„ca niewynajÄ™tych moÅ¼e mieÄ‡ problemy ze znalezieniem najemcÃ³w. Jest wiÄ™c i prawdopodobne, Å¼e w polskim krajobrazie pojawiÄ… siÄ™ wyludnione lub niedokoÅ„czone biurowce. Rzecz jeszcze caÅ‚kiem niedawno absolutnie niewyobraÅ¼alna.
 
-Ÿród³o: gazeta.pl
+ÅºrÃ³dÅ‚o: gazeta.pl

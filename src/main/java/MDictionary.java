@@ -90,10 +90,8 @@ public class MDictionary {
         do {
             index++;
             if(array[index] == null)
-                break;
+                return 0;
         } while (!array[index].getValue0().equals(W));
-        if(array[index] == null)
-            return 0;
         if(array[h].getValue1() == 0)
             amountWithCountMoreThanZero++;
         array[index] = array[index].setAt1(array[h].getValue1() + 1);

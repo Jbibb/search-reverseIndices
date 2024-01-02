@@ -11,7 +11,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SearchEngine {
-    public static final boolean UPDATE_INDICES_FLAG = false;
+    public static final boolean UPDATE_INDICES_FLAG = true;
     private MDictionary fileNamesDictionary;
     private Pair<Integer, String>[] fileIdsAndNamesArray;
 
@@ -51,7 +51,7 @@ public class SearchEngine {
      * @return
      */
     public String[] readFile(File file) {
-        String[] res = new String[Rozmiar.MAX_WORD];
+        String[] res = new String[30];
         int resIndex = 0;
         MorfologyTool mt = new MorfologyTool();
         try (BufferedReader br = new BufferedReader(new FileReader(file))){
@@ -60,19 +60,27 @@ public class SearchEngine {
             String text = "";
             while ((line = br.readLine()) != null)
                 text += line + " ";
-            //System.out.println("PRZED:");
-            //System.out.println(text);
+            System.out.println("PRZED:");
+            System.out.println(text);
             text = text.replaceAll("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+", "");
-            //System.out.println("PO:");
-            //System.out.println(text);
+            System.out.println("PO:");
+            System.out.println(text);
             split = text.split("[^a-zA-Z0-9ąćęłńóśżźĄĆŁŃÓĘŚŻŹ]+");
             for (String s : split)
-                if (toString().trim().length() > 1)
+                if (toString().trim().length() > 1) {
+                    if (resIndex >= res.length)
+                        res = Arrays.copyOf(res, (int) (res.length * 1.25));
                     res[resIndex++] = mt.getConcept(s.toLowerCase());
+                }
         } catch (IOException e){
             e.printStackTrace();
         }
 
+        res = Arrays.copyOfRange(res, 0, resIndex);
+        System.out.println("====================================");
+        for (String s : res)
+            System.out.println(s);
+        System.out.println("====================================");
         return Arrays.copyOfRange(res, 0, resIndex);
     }
 
@@ -148,9 +156,6 @@ public class SearchEngine {
         } catch (IOException e){
             e.printStackTrace();
         }
-
-        makeReversedIndexes();
-
     }
 
     private void updateIndex(File fileEntry, String word) {
@@ -226,6 +231,8 @@ public class SearchEngine {
      * @return
      */
     public String[] getDocsContainingWord(String word) {
+        makeReversedIndexes();
+
         String[] res = new String[new File("files").listFiles().length];
         int index = 0;
 
@@ -411,18 +418,17 @@ public class SearchEngine {
         Pair<Integer, Integer>[] res = new Pair[30];
         String[] fileValues;
         int resIndex = 0;
-        try (BufferedReader reverseIndexBr = new BufferedReader(new FileReader(file))) {
-            while (reverseIndexBr.ready()) {
-                fileValues = reverseIndexBr.readLine().split(" ");
-                if (resIndex >= res.length)
-                    res = Arrays.copyOf(res, (int) (res.length * 1.25));
-                res[resIndex++] = new Pair<>(Integer.parseInt(fileValues[0]), Integer.parseInt(fileValues[1]));
+        if(file.exists())
+            try (BufferedReader reverseIndexBr = new BufferedReader(new FileReader(file))) {
+                while (reverseIndexBr.ready()) {
+                    fileValues = reverseIndexBr.readLine().split(" ");
+                    if (resIndex >= res.length)
+                        res = Arrays.copyOf(res, (int) (res.length * 1.25));
+                    res[resIndex++] = new Pair<>(Integer.parseInt(fileValues[0]), Integer.parseInt(fileValues[1]));
+                }
+            } catch (IOException e){
+                e.printStackTrace();
             }
-        } catch (FileNotFoundException e){
-            ;
-        } catch (IOException e){
-            e.printStackTrace();
-        }
         return Arrays.copyOfRange(res, 0, resIndex);
     }
 
