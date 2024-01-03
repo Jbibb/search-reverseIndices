@@ -8,8 +8,7 @@ import java.io.*;
 import java.util.*;
 
 public class SearchEngine {
-    public static final boolean UPDATE_INDICES_FLAG = false;
-    private MDictionary fileNamesDictionary;
+    public static final boolean UPDATE_INDICES_FLAG = true;
     private Pair<Integer, String>[] fileIdsAndNamesArray;
 
     public String[] readFiles(String directory, MorfologyTool mt) {
@@ -193,25 +192,23 @@ public class SearchEngine {
     private Pair<Integer, String>[] getFileIdAndNames(){
         //ID plików w plikach indeksowych powinny być posortowane rosnąco ID
         //przypiszmy każdemu plikowi numer ID
+
+        //inaczej. pliki od 0 - n ponumerujmy poprostu....
+
         File[] files = new File("files").listFiles();
-        MDictionary dictionary = new MDictionary();
         Pair<Integer, String>[] fileIdsAndNames = new Pair[files.length];
         int i = 0;
 
         String fileName;
         for(File file : files) {
             fileName = file.getName().split(".txt")[0];
-            fileIdsAndNames[i++] = new Pair<>(dictionary.Add(fileName), fileName); //sama nazwa pliku, bez rozszerzenia
+            fileIdsAndNames[i] = new Pair<>(i++, fileName); //sama nazwa pliku, bez rozszerzenia
         }
         Arrays.sort(fileIdsAndNames, (pair1, pair2) -> pair1.getValue0() - pair2.getValue0());
 
-        fileNamesDictionary = dictionary;
         fileIdsAndNamesArray = fileIdsAndNames;
         return fileIdsAndNames;
     }
-
-
-
 
 
     /**
@@ -233,40 +230,8 @@ public class SearchEngine {
     }
 
     private String getFileName(int id) {
-        int f = 0, l = fileIdsAndNamesArray.length - 1;
-
-        while (f <= l) {
-            int m = f + (l - f) / 2;
-
-            if (fileIdsAndNamesArray[m].getValue0() == id) {
-                return fileIdsAndNamesArray[m].getValue1();
-            } else if (fileIdsAndNamesArray[m].getValue0() < id) {
-                f = m + 1;
-            } else {
-                l = m - 1;
-            }
-        }
-
-        return null;
+        return fileIdsAndNamesArray[id].getValue1();
     }
-
-    private int getOrderNumberOfFile(int fileId){
-        int f = 0, l = fileIdsAndNamesArray.length - 1;
-
-        while (f <= l) {
-            int m = f + (l - f) / 2;
-
-            if (fileIdsAndNamesArray[m].getValue0() == fileId) {
-                return m;
-            } else if (fileIdsAndNamesArray[m].getValue0() < fileId) {
-                f = m + 1;
-            } else {
-                l = m - 1;
-            }
-        }
-        return -1;
-    }
-
 
     /**
      * Zwraca pliki zawierające wszystkie podane słowa
@@ -296,6 +261,9 @@ public class SearchEngine {
     }
 
     public String[] getDocsContainingWords(String[] words){
+
+        //Teraz id plików to jednocześnie ich indeks jeżeli jest to tablica zawierająca wszystkie pliki
+
         Pair<Integer, Integer>[][] reverseIndices = new Pair[words.length][]; //odwrócone indeksy w postaci podtablic par reprezentujących każdy z plików [pary (plik, liczebność słowa)]
         /* Wierszy jest tyle co słów kluczowych (profile.length). We wszystkich wierszach (dla wszystkich słów kluczowych) liczba par powinna (chyba) być zbliżona do liczby plików tekstowych.
         Pary są posortowane rosnąco id plików. (pierwsza wartość w parze)
