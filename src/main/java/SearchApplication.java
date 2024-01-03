@@ -10,14 +10,7 @@ import java.io.IOException;
 
 public class SearchApplication {
     public static void main1(String[] args){
-        try (BufferedReader br = new BufferedReader(new FileReader("files/Android będzie płatny, więc smartfony zdrożeją.txt"))) {
-            while (br.ready()) {
-                System.out.println(br.readLine());
-                        //.replaceAll("[^\\x20A-Za-zĄąĆćĘęŁłÓóŚśŻżŹź\\xA5\\xB9\\xC6\\xE6\\xCA\\xEA\\xA3\\xB3\\xD3\\xF3\\x8C\\x9C\\x8F\\x9F\\xA1\\xB1]+", ""));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println(Math.round(Math.log10(6) * 100) / 100d);
     }
     public static void main(String[] args) {
         MorfologyTool mt = new MorfologyTool();
@@ -62,34 +55,40 @@ public class SearchApplication {
         // wyświetl pliki zawierające dane słowo
         String word = "rakieta";
         System.out.println("--------- Files containing " + word + " --------");
-        long startMoje = System.nanoTime();
+        long start = System.nanoTime();
         String[] res = se.getDocsContainingWord(word);
-        long endMoje = System.nanoTime();
-        double timeMoje = (endMoje - startMoje *1.0)/1_000_000;
-        System.out.println("Czas w ms = " + timeMoje);
+        long end = System.nanoTime();
+        double time = (end - start *1.0)/1_000_000;
+        System.out.println("Czas w ms = " + time);
         for(String file : res)
             System.out.println(file);
         // wyświetl pliki zawierające wszystkie słowa
-        words = new String[] {"rakieta"};
+        words = new String[] {"armia", "front", "artyleria", "wojsko"};
         System.out.print("--------- Files containing ");
         for(String w : words)
             System.out.print(w + " ");
         System.out.println(" --------");
 
-        long start = System.nanoTime();
+        start = System.nanoTime();
         String[] strings = se.getDocsContainingWords(words);
-        long end = System.nanoTime();
-        double time = (end - start *1.0)/1_000_000;
+        end = System.nanoTime();
+        time = (end - start *1.0)/1_000_000;
         System.out.println("Czas w ms = " + time);
         for(String file : strings)
             System.out.println(file);
+
         // wyświetl pliki zawierające najwięcej z podanych słów
         words = new String[] {"armia", "artyleria", "front", "generał", "wojsko", "broń", "bitwa", "atakować"};
         System.out.print("--------- Files containing max of: ");
         for(String w : words)
             System.out.print(w + " ");
         System.out.println(" --------");
-        for(String file : se.getDocsWithMaxMatchingWords(words, 6))
+        start = System.nanoTime();
+        String[] docsWithMaxMatchingWords = se.getDocsWithMaxMatchingWords(words, 6);
+        end = System.nanoTime();
+        time = (end - start *1.0)/1_000_000;
+        System.out.println("Czas w ms = " + time);
+        for(String file : docsWithMaxMatchingWords)
             System.out.println(file);
         String profileName = "militaria";
         System.out.println("-------- Files closest to the profile: '"+ profileName + "' --------");
