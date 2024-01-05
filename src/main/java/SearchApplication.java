@@ -51,7 +51,7 @@ public class SearchApplication {
 
         }
         se.makeReverseIndices();
-
+        /*
         // wyświetl pliki zawierające dane słowo
         String word = "rakieta";
         System.out.println("--------- Files containing " + word + " --------");
@@ -76,7 +76,8 @@ public class SearchApplication {
         System.out.println("Czas w ms = " + time);
         for(String file : strings)
             System.out.println(file);
-
+        */
+        double start, end, time;
         // wyświetl pliki zawierające najwięcej z podanych słów
         words = new String[] {"armia", "artyleria", "front", "generał", "wojsko", "broń", "bitwa", "atakować"};
         System.out.print("--------- Files containing max of: ");
@@ -84,7 +85,7 @@ public class SearchApplication {
             System.out.print(w + " ");
         System.out.println(" --------");
         start = System.nanoTime();
-        String[] docsWithMaxMatchingWords = se.getDocsWithMaxMatchingWords(words, 6);
+        String[] docsWithMaxMatchingWords = se.getDocsWithMaxMatchingWords(words, 40);
         end = System.nanoTime();
         time = (end - start *1.0)/1_000_000;
         System.out.println("Czas w ms = " + time);

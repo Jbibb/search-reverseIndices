@@ -356,7 +356,7 @@ public class SearchEngine {
      * @param words
      * @return
      */
-    public String[] getDocsWithMaxMatchingWordsOld(String[] words, int n) {
+    public String[] getDocsWithMaxMatchingWordsOldOld(String[] words, int n) {
         MDictionary dictionary = new MDictionary();
         String[] fileValues;
         File reverseIndexFile;
@@ -382,6 +382,156 @@ public class SearchEngine {
     }
 
     public String[] getDocsWithMaxMatchingWords(String[] words, int n) {
+        Pair<Integer, Integer>[][] reverseIndices = new Pair[words.length][];
+
+        int l = 0;
+
+        for(String keyWord : words) {
+            reverseIndices[l] = readIndex(new File("indices/reverseIndices/" + words[l] + ".idx"));
+            l++;
+        }
+
+        int[] pointers = new int[reverseIndices.length];
+        int finishedPointers = 0;
+        for(int i = 0; i < reverseIndices.length; i++) {
+            if (reverseIndices[i].length == 0) {
+                pointers[i] = -1;
+                finishedPointers++;
+            }
+        }
+
+        Pair<String, Integer>[] heap = new Pair[pointers.length];
+        int heapIndex = 0;
+
+        int minFileId, matchingFileIdCount;
+        while (finishedPointers != pointers.length) {
+
+            minFileId = Integer.MAX_VALUE;
+            for(int i = 0; i < pointers.length; i++)
+                if(pointers[i] != -1)
+                    if (reverseIndices[i][pointers[i]].getValue0() < minFileId)
+                        minFileId = reverseIndices[i][pointers[i]].getValue0();
+
+            matchingFileIdCount = 0;
+            for(int i = 0; i < pointers.length; i++) {
+                if (pointers[i] != -1) {
+                    if (reverseIndices[i][pointers[i]].getValue0() == minFileId) {
+                        matchingFileIdCount++;
+                        if (++pointers[i] >= reverseIndices[i].length - 1) {
+                            pointers[i] = -1;
+                            finishedPointers++;
+                        }
+                    }
+                }
+            }
+
+            //Dodanie do max heapa
+            if(heapIndex >= heap.length)
+                heap = Arrays.copyOf(heap, (int)(heap.length * 1.25));
+            heap[heapIndex++] = new Pair<String, Integer>(getFileName(minFileId), matchingFileIdCount);
+
+        }
+
+        heap = Arrays.copyOf(heap, heapIndex);
+
+        if(n > heap.length)
+            n = heap.length;
+
+        int j;
+        int i;
+        Pair<String, Integer> tmp;
+
+        j = 1;
+        while ((i = heap.length / 2 - j) >= 0) {
+            heapify(heap, 0, i);
+            j++;
+        }
+
+        for(int k = 0; k < n; k++) {
+
+            tmp = heap[0];
+            heap[0] = heap[heap.length - 1 - k];
+            heap[heap.length - 1 - k] = tmp;
+
+            for(i = heap.length/2 - 1; i >= 0; i--)
+                heapifyRec(heap, k, i);
+        }
+
+        String[] res = new String[n];
+
+        for(int m = 0; m < n; m++)
+            res[m] = heap[heap.length - 1 - m].getValue1() + " " + heap[heap.length - 1 - m].getValue0();
+
+        return res;
+    }
+    private void heapify(Pair<String, Integer>[] heap, int range, int i) {
+        Pair<String, Integer> tmp;
+        boolean leftChildBigger = false, rightChildBigger = false;
+
+        if(2 * i + 1 < heap.length - 1 - range) {
+            leftChildBigger = heap[2 * i + 1].getValue1() > heap[i].getValue1();
+            if(2 * i + 2 < heap.length - 1 - range)
+                rightChildBigger = heap[2 * i + 2].getValue1() > heap[i].getValue1();
+            if(leftChildBigger && rightChildBigger) {
+                if (heap[2 * i + 1].getValue1() > heap[2 * i + 2].getValue1()) {
+                    tmp = heap[i];
+                    heap[i] = heap[2 * i + 1];
+                    heap[2 * i + 1] = tmp;
+                } else {
+                    tmp = heap[i];
+                    heap[i] = heap[2 * i + 2];
+                    heap[2 * i + 2] = tmp;
+                }
+            } else if (rightChildBigger) {
+                tmp = heap[i];
+                heap[i] = heap[2 * i + 2];
+                heap[2 * i + 2] = tmp;
+            } else if (leftChildBigger) {
+                tmp = heap[i];
+                heap[i] = heap[2 * i + 1];
+                heap[2 * i + 1] = tmp;
+            }
+        }
+    }
+
+    private void heapifyRec(Pair<String, Integer>[] heap, int range, int i) {
+        Pair<String, Integer> tmp;
+        boolean leftChildBigger = false, rightChildBigger = false;
+
+        if(2 * i + 1 < heap.length - 1 - range) {
+            leftChildBigger = heap[2 * i + 1].getValue1() > heap[i].getValue1();
+            if(2 * i + 2 < heap.length - 1 - range)
+                rightChildBigger = heap[2 * i + 2].getValue1() > heap[i].getValue1();
+            if(leftChildBigger && rightChildBigger) {
+                if (heap[2 * i + 1].getValue1() > heap[2 * i + 2].getValue1()) {
+                    tmp = heap[i];
+                    heap[i] = heap[2 * i + 1];
+                    heap[2 * i + 1] = tmp;
+                    if(2 * i + 1 < heap.length - 1 - range)
+                        heapifyRec(heap, range, 2 * i + 1);
+                } else {
+                    tmp = heap[i];
+                    heap[i] = heap[2 * i + 2];
+                    heap[2 * i + 2] = tmp;
+                    if(2 * i + 2 < heap.length - 1 - range)
+                        heapifyRec(heap, range, 2 * i + 2);
+                }
+            } else if (rightChildBigger) {
+                tmp = heap[i];
+                heap[i] = heap[2 * i + 2];
+                heap[2 * i + 2] = tmp;
+                if(2 * i + 1 < heap.length - 1 - range)
+                    heapifyRec(heap, range, 2 * i + 2);
+            } else if (leftChildBigger) {
+                tmp = heap[i];
+                heap[i] = heap[2 * i + 1];
+                heap[2 * i + 1] = tmp;
+                if(2 * i + 1 < heap.length - 1 - range)
+                    heapifyRec(heap, range, 2 * i + 2);
+            }
+        }
+    }
+    public String[] getDocsWithMaxMatchingWordsOld(String[] words, int n) {
         Pair<Integer, Integer>[][] reverseIndices = new Pair[words.length][];
 
         int l = 0;
@@ -611,7 +761,7 @@ public class SearchEngine {
                     for(Pair<Integer, Integer> pair : reverseIndex) {
                         if (Objects.equals(pair.getValue0(), fileIdsAndNamesArray[i].getValue0())) {
                             logResult = Math.log10(pair.getValue1());
-                            System.out.println(logResult);
+                            //System.out.println(logResult);
                             if (pairs[i] == null) {
                                 pairs[i] = new Pair<>(getFileName(pair.getValue0()), logResult);
                             } else {
