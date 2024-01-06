@@ -8,7 +8,6 @@ import java.io.*;
 import java.util.*;
 
 public class SearchEngine {
-    public static final boolean UPDATE_INDICES_FLAG = true;
     public String[] readFiles(String directory, MorfologyTool mt) {
 
         File folder = new File("files");
@@ -54,9 +53,9 @@ public class SearchEngine {
             String text = "";
             while ((line = br.readLine()) != null)
                 text += line + " ";
-            //text = text.replaceAll("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+", "");
-            //split = text.split("[^a-zA-Z0-9ąćęłńóśżźĄĆŁŃÓĘŚŻŹ]+");
-            split = text.split("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+");
+            text = text.replaceAll("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+", "");
+            split = text.split("[^a-zA-Z0-9ąćęłńóśżźĄĆŁŃÓĘŚŻŹ]+");
+            //split = text.split("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+");
             for (String s : split)
                 if (toString().trim().length() > 1) {
                     if (resIndex >= res.length)
@@ -103,8 +102,8 @@ public class SearchEngine {
             while(br.ready()) {
                 if (resIndex >= res.length)
                     res = Arrays.copyOf(res, (int) (res.length * 1.25));
-                //res[resIndex++] = br.readLine().replaceAll("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+", ""); // to jest potrzebne bo w plikach profilowych jest jakieś zło które sprawia że .equals() nie działa
-                res[resIndex++] = br.readLine();
+                res[resIndex++] = br.readLine().replaceAll("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+", ""); // to jest potrzebne bo w plikach profilowych jest jakieś zło które sprawia że .equals() nie działa
+                //res[resIndex++] = br.readLine();
             }
         } catch (IOException e){
             e.printStackTrace();
@@ -119,7 +118,7 @@ public class SearchEngine {
      */
     public void makeIndex(File fileEntry, Pair<String, Integer>[] wordsL) {
         File file = new File("indices/" + String.copyValueOf(fileEntry.getName().toCharArray(), 0, fileEntry.getName().length() - 4) + ".idx");
-
+        currentFileId++;
         try {
             if(!file.createNewFile()) {
                 FileOutputStream fos = new FileOutputStream(file);
@@ -130,16 +129,46 @@ public class SearchEngine {
         }
 
         try (PrintWriter pw = new PrintWriter(file)) {
-            for(Pair pair : wordsL)
+            for(Pair<String, Integer> pair : wordsL) {
                 pw.println(pair.getValue0() + " " + pair.getValue1());
+                updateReverseIndex(pair.getValue0(), pair.getValue1());
+            }
         } catch (IOException e){
             e.printStackTrace();
         }
     }
+    private int currentFileId = -1;
+    private boolean oldFilesCleared = false;
+    private void updateReverseIndex(String keyWord, int count) {
+        File reverseIndexFile = new File("indices/reverseIndices/" + keyWord + ".idx");
+        File reverseIndicesFolder = new File("indices/reverseIndices");
+        reverseIndicesFolder.mkdir();
+
+        if(!oldFilesCleared){
+            for(File oldFile : reverseIndicesFolder.listFiles())
+                oldFile.delete();
+            oldFilesCleared = true;
+        }
+
+        try {
+            reverseIndexFile.createNewFile();
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+        try (PrintWriter pw = new PrintWriter(new FileOutputStream(reverseIndexFile, true))){
+            pw.println(currentFileId + " " + count);
+        } catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
 
     private void updateIndex(File fileEntry, String word) {
-       //to do
+        //todo
     }
+
+
 
     /**
      * Tworzy pliki indeksowe dla słów kluczowych: w każdym wierszu jest id pliku oraz liczba wystąpień słowa w pliku
@@ -338,7 +367,7 @@ public class SearchEngine {
         array = Arrays.copyOf(array, index);
         if(n > array.length) n = array.length;
 
-        int max = array[0].getValue1();
+        int max = -1;
         for (int i = 1; i < array.length; i++)
             if (array[i].getValue1() > max)
                 max = array[i].getValue1();

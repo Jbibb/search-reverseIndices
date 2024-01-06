@@ -22,35 +22,32 @@ public class SearchApplication {
         String word2 = "";
         String phrase = "";
         String[] words = null;
-        if(SearchEngine.UPDATE_INDICES_FLAG) {
-            for (String word : keyWords) {
-                mDict.Add(word);
-            }
-            /*
-            System.out.println("-------- In dictionary -------");
-            for (String word : mDict.getWords()) {
-                System.out.println(word);
-            }
-             */
-
-            /*
-            String[] ss = se.readFiles("files", mt);
-            for (String s : ss)
-                System.out.println(s);
-            */
-
-            File folder = new File("files");
-            for (final File fileEntry : folder.listFiles()) {
-                words = se.readFile(fileEntry);
-                mDict.Reset();
-                for (String word : words)
-                    mDict.Find(word);
-                Pair<String, Integer>[] wordsL = mDict.getAppearedWordsWithCount();
-                se.makeIndex(fileEntry, wordsL);
-            }
-
+        for (String word : keyWords) {
+            mDict.Add(word);
         }
-        se.makeReverseIndices();
+
+        System.out.println("-------- In dictionary -------");
+        for (String word : mDict.getWords()) {
+            System.out.println(word);
+        }
+
+
+
+        String[] ss = se.readFiles("files", mt);
+        for (String s : ss)
+            System.out.println(s);
+
+
+        File folder = new File("files");
+        for (final File fileEntry : folder.listFiles()) {
+            words = se.readFile(fileEntry);
+            mDict.Reset();
+            for (String word : words)
+                mDict.Find(word);
+            Pair<String, Integer>[] wordsL = mDict.getAppearedWordsWithCount();
+            se.makeIndex(fileEntry, wordsL);
+        }
+
 
         // wyświetl pliki zawierające dane słowo
         String word = "rakieta";
