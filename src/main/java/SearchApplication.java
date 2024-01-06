@@ -51,7 +51,7 @@ public class SearchApplication {
 
         }
         se.makeReverseIndices();
-        /*
+
         // wyświetl pliki zawierające dane słowo
         String word = "rakieta";
         System.out.println("--------- Files containing " + word + " --------");
@@ -63,7 +63,7 @@ public class SearchApplication {
         for(String file : res)
             System.out.println(file);
         // wyświetl pliki zawierające wszystkie słowa
-        words = new String[] {"armia", "front", "artyleria", "wojsko"};
+        words = new String[] {"armia", "artyleria", "front", "wojsko"};
         System.out.print("--------- Files containing ");
         for(String w : words)
             System.out.print(w + " ");
@@ -76,16 +76,15 @@ public class SearchApplication {
         System.out.println("Czas w ms = " + time);
         for(String file : strings)
             System.out.println(file);
-        */
-        double start, end, time;
+
         // wyświetl pliki zawierające najwięcej z podanych słów
-        words = new String[] {"armia", "artyleria", "front", "generał", "wojsko", "broń", "bitwa", "atakować"};
+        words = new String[] {"armia", "artyleria", "front", "wojsko"};
         System.out.print("--------- Files containing max of: ");
         for(String w : words)
             System.out.print(w + " ");
         System.out.println(" --------");
         start = System.nanoTime();
-        String[] docsWithMaxMatchingWords = se.getDocsWithMaxMatchingWords(words, 40);
+        String[] docsWithMaxMatchingWords = se.getDocsWithMaxMatchingWords(words, 6);
         end = System.nanoTime();
         time = (end - start *1.0)/1_000_000;
         System.out.println("Czas w ms = " + time);
@@ -94,7 +93,7 @@ public class SearchApplication {
         String profileName = "militaria";
         System.out.println("-------- Files closest to the profile: '"+ profileName + "' --------");
         start = System.nanoTime();
-        Pair<String, Double> [] files = se.getDocsClosestToProfile(25, profileName);
+        Pair<String, Double> [] files = se.getDocsClosestToProfile(10, profileName);
         end = System.nanoTime();
         time = (end - start *1.0)/1_000_000;
         System.out.println("Czas w ms = " + time);
