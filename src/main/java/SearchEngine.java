@@ -8,6 +8,7 @@ import java.io.*;
 import java.util.*;
 
 public class SearchEngine {
+    String[] fileNames;
     public String[] readFiles(String directory, MorfologyTool mt) {
 
         File folder = new File("files");
@@ -23,7 +24,7 @@ public class SearchEngine {
                 while ((line = br.readLine()) != null)
                     text += line + " ";
                 br.close();
-                text = text.replaceAll("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+", "");
+                //text = text.replaceAll("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+", "");
                 split = text.split("[^a-zA-Z0-9ąćęłńóśżźĄĆŁŃÓĘŚŻŹ]+");
             } catch (FileNotFoundException e) {
                 System.out.println(e.getMessage());
@@ -44,6 +45,7 @@ public class SearchEngine {
      * @return
      */
     public String[] readFile(File file) {
+        System.out.print(file.getName());
         String[] res = new String[30];
         int resIndex = 0;
         MorfologyTool mt = new MorfologyTool();
@@ -53,7 +55,7 @@ public class SearchEngine {
             String text = "";
             while ((line = br.readLine()) != null)
                 text += line + " ";
-            text = text.replaceAll("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+", "");
+            //text = text.replaceAll("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+", "");
             split = text.split("[^a-zA-Z0-9ąćęłńóśżźĄĆŁŃÓĘŚŻŹ]+");
             //split = text.split("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+");
             for (String s : split)
@@ -102,8 +104,8 @@ public class SearchEngine {
             while(br.ready()) {
                 if (resIndex >= res.length)
                     res = Arrays.copyOf(res, (int) (res.length * 1.25));
-                res[resIndex++] = br.readLine().replaceAll("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+", ""); // to jest potrzebne bo w plikach profilowych jest jakieś zło które sprawia że .equals() nie działa
-                //res[resIndex++] = br.readLine();
+                //res[resIndex++] = br.readLine().replaceAll("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+", ""); // to jest potrzebne bo w plikach profilowych jest jakieś zło które sprawia że .equals() nie działa
+                res[resIndex++] = br.readLine();
             }
         } catch (IOException e){
             e.printStackTrace();
@@ -119,6 +121,7 @@ public class SearchEngine {
     public void makeIndex(File fileEntry, Pair<String, Integer>[] wordsL) {
         File file = new File("indices/" + String.copyValueOf(fileEntry.getName().toCharArray(), 0, fileEntry.getName().length() - 4) + ".idx");
         currentFileId++;
+
         try {
             if(!file.createNewFile()) {
                 FileOutputStream fos = new FileOutputStream(file);
@@ -254,7 +257,9 @@ public class SearchEngine {
     }
 
     private String getFileName(int id) {
-        return new File("files").list()[id].replace(".txt", "");
+        if(fileNames == null)
+            fileNames = new File("files").list();
+        return fileNames[id].replace(".txt", "");
     }
 
     /**
@@ -358,6 +363,7 @@ public class SearchEngine {
                 }
             }
 
+
             if(index >= array.length)
                 array = Arrays.copyOf(array, (int)(array.length * 1.25));
             array[index++] = new Pair<String, Integer>(getFileName(minFileId), matchingFileIdCount);
@@ -367,7 +373,7 @@ public class SearchEngine {
         array = Arrays.copyOf(array, index);
         if(n > array.length) n = array.length;
 
-        int max = -1;
+        /*int max = -1;
         for (int i = 1; i < array.length; i++)
             if (array[i].getValue1() > max)
                 max = array[i].getValue1();
@@ -388,11 +394,11 @@ public class SearchEngine {
                 count[9 - (array[i].getValue1() / exp) % 10]--;
             }
 
-            System.arraycopy(output, 0, array, 0, array.length);
-        }
+            System.arraycopy(output, 0, array, 0, n);
+        }*/
 
 
-
+        Arrays.sort(array, (pair2, pair1) -> pair1.getValue1() - pair2.getValue1());
         String[] res = new String[n];
 
         for(int m = 0; m < n; m++)
@@ -415,7 +421,7 @@ public class SearchEngine {
 
         int[] pointers = new int[reverseIndices.length];
 
-        int minFileId, finishedPointers = 0;
+        int minFileId, finishedPointers = 0, div;
         double logSum;
         for(int i = 0; i < reverseIndices.length; i++)
             if(reverseIndices[i].length == 0){
@@ -432,11 +438,15 @@ public class SearchEngine {
                         minFileId = reverseIndices[i][pointers[i]].getValue0();
 
             logSum = 0;
+            div = 0;
+            System.out.println("========Dla pliku===========:" + getFileName(minFileId));
             for(int i = 0; i < pointers.length; i++) {
                 if (pointers[i] != -1) {
                     if (reverseIndices[i][pointers[i]].getValue0() == minFileId) {
 
+                        System.out.println("log(" + reverseIndices[i][pointers[i]].getValue1() + ") " + logSum);
                         logSum += Math.log10(reverseIndices[i][pointers[i]].getValue1());
+                        div++;
 
                         if (++pointers[i] >= reverseIndices[i].length) {
                             pointers[i] = -1;
@@ -445,9 +455,9 @@ public class SearchEngine {
                     }
                 }
             }
-
-            logSum /= keyWords.length;
-            logSum = Math.round(logSum * 100) / 100d;
+            System.out.println("sumę dzielimy przez " + div);
+            logSum /= div;
+            logSum = Math.round(logSum * 10000d) / 100d;
             if(fileIdsOccurrencesIndex >= res.length) {
                 tmp = new Pair[(int)(res.length * 1.25)];
                 System.arraycopy(res, 0, tmp, 0, fileIdsOccurrencesIndex);
