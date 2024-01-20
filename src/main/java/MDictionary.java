@@ -5,8 +5,8 @@
 import org.javatuples.Pair;
 
 public class MDictionary {
-    // to do
-    private int size, amountWithCountMoreThanZero;
+    private int size; //liczba elementów
+    private int amountWithCountMoreThanZero; //liczba elementów w których druga wartość pary jest większa niż 0
     private Pair<String, Integer>[] array;
 
     public MDictionary() {
@@ -67,7 +67,7 @@ public class MDictionary {
      Podaje klucz dla danego słowa
     **/
     private int Haszuj(String W) {
-        int hash = Rozmiar.PIERWSZA;
+        int hash = 19133;
         for (int i = 0; i < W.length(); i++) {
             hash = hash*31 + W.charAt(i);
         }
@@ -170,16 +170,13 @@ public class MDictionary {
     public Pair<String, Integer>[] getAppearedWordsWithCount() {
         int resIndex = 0;
         Pair<String,Integer>[] res = new Pair[amountWithCountMoreThanZero];
-        for(int i = 0; i < array.length; i++)
+        for(int i = 0, j = amountWithCountMoreThanZero; i < array.length && j > 0; i++)
             if(array[i] != null)
-                if(array[i].getValue1() > 0)
+                if(array[i].getValue1() > 0) {
                     res[resIndex++] = new Pair<>(array[i].getValue0(), array[i].getValue1());
+                    j--;
+                }
         return res;
-    }
-
-    //moje, nie wiem czy można
-    public String getWord(int h){
-        return null;
     }
 
     @Override
