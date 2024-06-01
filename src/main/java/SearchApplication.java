@@ -33,7 +33,7 @@ public class SearchApplication {
                 mDict.Find(word);
             Pair<String, Integer>[] wordsL = mDict.getAppearedWordsWithCount();
             se.makeIndex(fileEntry, wordsL);
-        }
+       }
         // wyświetl pliki zawierające dane słowo
         String word = "rakieta";
         System.out.println("--------- Files containing " + word + " --------");

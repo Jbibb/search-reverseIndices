@@ -20,13 +20,13 @@ public class MDictionary {
      // <remarks>Metoda przydatna na zakończenie Dictu lub przed ponownym załadowaniem</remarks>
      **/
     public void Empty() {
-       size = 0;
-       array = new Pair[Rozmiar.MAX_ELEM];
+        size = 0;
+        array = new Pair[Rozmiar.MAX_ELEM];
     }
 
     /**
      Metoda zeruje liczbę wystąpień pojęć w słowniku
-    **/
+     **/
     public void Reset()
     {
         amountWithCountMoreThanZero = 0;
@@ -36,8 +36,8 @@ public class MDictionary {
     }
 
     /**
-    Dodanie pojęcia do słownika na podstawie słowa i numeru klucza haszowego
-    **/
+     Dodanie pojęcia do słownika na podstawie słowa i numeru klucza haszowego
+     **/
     private int Add(String W, int h)
     {
         if(array[h] == null) {
@@ -57,15 +57,15 @@ public class MDictionary {
     }
 
     /**
-    /// Dodanie pojęcia do słownika na podstawie słowa
-    **/
+     /// Dodanie pojęcia do słownika na podstawie słowa
+     **/
     public int Add(String W) {
         return Add(W, Haszuj(W));
     }
 
     /**
      Podaje klucz dla danego słowa
-    **/
+     **/
     private int Haszuj(String W) {
         int hash = 19133;
         for (int i = 0; i < W.length(); i++) {
@@ -75,8 +75,8 @@ public class MDictionary {
     }
 
     /**
-    Metoda zwraca numer słowa lub 0 i zwiększa liczbę wystąpień
-    **/
+     Metoda zwraca numer słowa lub 0 i zwiększa liczbę wystąpień
+     **/
     private int Find(String W, int h) {
         if(array[h] == null)
             return 0;
@@ -131,8 +131,8 @@ public class MDictionary {
     }
 
     /** <summary>
-    Metoda zwraca numer słowa lub 0 i zwiększa liczbę wystąpień
-    **/
+     Metoda zwraca numer słowa lub 0 i zwiększa liczbę wystąpień
+     **/
     public int Find(String W) {
         return Find(W, Haszuj(W));
     }

@@ -3,16 +3,18 @@
  */
 
 import org.javatuples.Pair;
-
 import java.io.*;
+import java.text.Collator;
 import java.util.*;
 
 public class SearchEngine {
+
     public String[] readFiles(String directory, MorfologyTool mt) {
 
         File folder = new File("files");
         HashSet<String> set = new HashSet<>();
         for (final File file : folder.listFiles()) {
+            System.out.println(file.toString());
             String[] split = null;
             try {
                 FileReader fr = new FileReader(file);
@@ -22,7 +24,6 @@ public class SearchEngine {
                 while ((line = br.readLine()) != null)
                     text += line + " ";
                 br.close();
-                //text = text.replaceAll("[^\\x00-\\x7FąćęłńóśźżĄĆĘŁŃÓŚŹŻ]+", "");
                 split = text.split("[^a-zA-Z0-9ąćęłńóśżźĄĆŁŃÓĘŚŻŹ]+");
             } catch (FileNotFoundException e) {
                 System.out.println(e.getMessage());
@@ -35,10 +36,8 @@ public class SearchEngine {
         }
         return set.toArray(String[]::new);
     }
-
     /**
      * Czytanie pliku i jego rozbiór morfologiczny
-     *
      * @param file
      * @return
      */
@@ -72,7 +71,6 @@ public class SearchEngine {
         res = tmp;
         return res;
     }
-
     /**
      * Czytanie profili i scalanie ich (merge). Metoda zwraca słownik główny
      */
@@ -452,66 +450,6 @@ public class SearchEngine {
      * @param n
      * @return
      */
-    public Pair<String, Double>[] getDocsClosestToProfileWorse(int n, String profileName) {
-        String[] fileNames = new File("files").list();
-
-        String[] keyWords = readProfile(profileName + ".txt");
-        Pair<Integer, Integer>[][] reverseIndices = getReverseIndicesForKeywords(keyWords);
-
-        Pair<String, Integer>[] res = new Pair[30], tmp;
-        int fileIdsOccurrencesIndex = 0;
-
-        int[] pointers = new int[reverseIndices.length];
-
-        int minFileId, finishedPointers = 0;
-        int logSum;
-        for (int i = 0; i < reverseIndices.length; i++)
-            if (reverseIndices[i].length == 0) {
-                pointers[i] = -1;
-                finishedPointers++;
-            }
-
-        while (finishedPointers != pointers.length) {
-
-            minFileId = Integer.MAX_VALUE;
-            for (int i = 0; i < pointers.length; i++)
-                if (pointers[i] != -1)
-                    if (reverseIndices[i][pointers[i]].getValue0() < minFileId)
-                        minFileId = reverseIndices[i][pointers[i]].getValue0();
-
-            logSum = 0;
-            for (int i = 0; i < pointers.length; i++) {
-                if (pointers[i] != -1) {
-                    if (reverseIndices[i][pointers[i]].getValue0() == minFileId) {
-                        logSum += (int) Math.round(Math.log10(reverseIndices[i][pointers[i]].getValue1()) * 1000);
-
-                        if (++pointers[i] >= reverseIndices[i].length) {
-                            pointers[i] = -1;
-                            finishedPointers++;
-                        }
-                    }
-                }
-            }
-            logSum /= keyWords.length;
-            if (fileIdsOccurrencesIndex >= res.length) {
-                tmp = new Pair[(int) (res.length * 1.25)];
-                System.arraycopy(res, 0, tmp, 0, fileIdsOccurrencesIndex);
-                res = tmp;
-            }
-            res[fileIdsOccurrencesIndex++] = new Pair<>(fileNames[minFileId], logSum);
-        }
-
-        tmp = new Pair[fileIdsOccurrencesIndex];
-        System.arraycopy(res, 0, tmp, 0, fileIdsOccurrencesIndex);
-        res = tmp;
-
-        radixSort(res);
-        Pair<String, Double>[] resWithDouble = new Pair[Math.min(fileIdsOccurrencesIndex, n)];
-        for(int i = 0; i < resWithDouble.length; i++)
-            resWithDouble[i] = new Pair<>(res[i].getValue0(), (res[i].getValue1() / 10d));
-
-        return resWithDouble;
-    }
     public Pair<String, Double>[] getDocsClosestToProfile(int n, String profileName) {
         File indicesDirectory = new File("indices");
         File[] indices = indicesDirectory.listFiles();
@@ -528,14 +466,16 @@ public class SearchEngine {
 
         for(File indexFile : indices){
             logSum = 0;
-            try(BufferedReader br = new BufferedReader(new FileReader(indexFile.getAbsolutePath()))){
-                while(br.ready()) {
+            try(BufferedReader br = new BufferedReader(new FileReader(indexFile.getAbsolutePath()))) {
+                while (br.ready()) {
                     fileValues = br.readLine().split(" ");
-                    if(mDict.Find(fileValues[0]) != 0)
+                    if (mDict.Find(fileValues[0]) != 0)
                         logSum += (int) Math.round(Math.log10(Integer.parseInt(fileValues[1])) * 1000);
                 }
+            } catch (FileNotFoundException e) {
+                ;
             } catch (IOException e){
-                ;//e.printStackTrace();
+                e.printStackTrace();
             }
             res[resIndex++] = new Pair<>(indexFile.getName(), logSum/keyWords.length);
         }
@@ -577,5 +517,10 @@ public class SearchEngine {
         res = tmp;
 
         return res;
+    }
+
+    private Pair<String, Integer>[] sort(Pair<String, Integer>[] pairs) {
+        // to do
+        return null;
     }
 }
